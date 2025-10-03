@@ -20,22 +20,43 @@ namespace BusinessLogicLayer.Services.Classes
 
         public void DeleteEmployee(int id)
         {
-            throw new NotImplementedException();
+            _uniteOfWork.empRepo.Delete(id);
+            _uniteOfWork.Save();
         }
 
         public IEnumerable<EmployeeDetailsDto> GetAllEmployee()
         {
-            throw new NotImplementedException();
+            var emps = _uniteOfWork.empRepo.GetAll();
+
+            var empListDTO = emps.Select(e => new EmployeeDetailsDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Department = e.Department?.Name ?? "N/A"
+            });
+
+            return empListDTO;
         }
 
         public EmployeeDto? GetEmployeeById(int id)
         {
-            throw new NotImplementedException();
+            var emp = _uniteOfWork.empRepo.GetById(id);
+
+            return emp is null ? null : new EmployeeDto
+            {
+                Name = emp.Name,
+                Department = emp.Department.Name
+            };
         }
 
         public void UpdateEmployee(UpdateEmpleeDtos updateEmpleeDtos)
         {
-            throw new NotImplementedException();
+            var emp = new Employee()
+            {
+                Id = updateEmpleeDtos.Id,
+                Name = updateEmpleeDtos.Name,
+                DepartmentId = updateEmpleeDtos.DepartmentId,
+            };
         }
     }
 }

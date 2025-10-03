@@ -1,4 +1,8 @@
+using BusinessLogicLayer.Services.Classes;
+using BusinessLogicLayer.Services.Interfaces;
 using DataAccess.Data.Context;
+using DataAccess.Data.Repositories.Classes;
+using DataAccess.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace PresentationTestEmployee
@@ -12,9 +16,14 @@ namespace PresentationTestEmployee
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<AppDbContext>(options => options
-            .UseSqlServer(builder.Configuration.GetConnectionString("constr")));
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("constr"));
+                options.UseLazyLoadingProxies();
+            });
 
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
 
             var app = builder.Build();
 
